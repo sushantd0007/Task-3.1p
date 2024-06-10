@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+# Your Name
+# Your Student ID
+# Task Description
+
+# Import necessary modules
+import rospy
+from geometry_msgs.msg import Twist
+import time
+
+def turtle_square_dance():
+    # Initialize the ROS node
+    rospy.init_node('turtle_square_dancer', anonymous=True)
+
+    # Create a publisher for the turtle's velocity commands
+    velocity_commander = rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size=10)
+    rospy.loginfo("Let's make the turtle dance in a square!")
+
+    # Set the linear and angular velocities for the square dance
+    linear_speed = 2.0  # meters per second
+    angular_speed = 1.57  # radians per second (90 degrees)
+
+    # Start the square dance loop
+    while not rospy.is_shutdown():
+        # Move forward
+        velocity_msg = Twist()
+        velocity_msg.linear.x = linear_speed
+        velocity_msg.angular.z = 0
+        velocity_commander.publish(velocity_msg)
+        time.sleep(2)  # Move for 2 seconds
+
+        # Rotate 90 degrees
+        velocity_msg = Twist()
+        velocity_msg.linear.x = 0
+        velocity_msg.angular.z = angular_speed
+        velocity_commander.publish(velocity_msg)
+        time.sleep(1)  # Rotate for 1 second
+
+    # Stop the turtle's motion
+    stop_msg = Twist()
+    stop_msg.linear.x = 0
+    stop_msg.angular.z = 0
+    velocity_commander.publish(stop_msg)
+
+if _name_ == '_main_':
+    try:
+        turtle_square_dance()
+    except rospy.ROSInterruptException:
+        pass
